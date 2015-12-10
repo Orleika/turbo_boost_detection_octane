@@ -8,41 +8,39 @@
     turboboost,
     note;
 
-  console.log(benchmarks);
+  var targetTime = Date.parse('2015-12-04T10:40:00+09:00');
+  var now = Date.now();
 
   function send() {
-    $.ajax({
+    return $.ajax({
       'type': 'POST',
       'url': 'tbd.php',
       'data': {
-        name: name,
-        turboboost: turboboost,
-        scores: JSON.stringify(scores),
-        note: note
+        name: 'yasuda',
+        turboboost: false,
+        scores: JSON.stringify(scores)
       }
     });
   }
 
-  function disp() {
-    var dom = '<p>result</p>';
-    scores.forEach(function(el) {
-      dom += '<p>' + el.name + ': ' + el.score + '</p>';
-    });
+  function disp(dom) {
     $('#result').append(dom);
   }
 
   function detectTurboBoost() {}
 
   function AddResult(name, result) {
-    console.log(name, ': ', result);
     scores.push({
       name: name,
       score: result
     });
     if (++completed === benchmarks - 1) {
       detectTurboBoost();
-      send();
-      disp();
+      send()
+        .then(function() {
+            disp('<h3>end: ' + new Date() + '</h3>');
+            // location.reload();
+        });
     }
   }
 
@@ -58,10 +56,12 @@
     }, []);
   }
 
-  $('#run').on('click', function() {
-    if(!$('#name').val() || !$('input[name="tb"]:checked').val()) {
-      return;
-    }
-    Run();
-  });
+  window.onload = function() {
+  //  if (now < targetTime) {
+      disp('<h3>start: ' + new Date(now) + '</h3>');
+      setTimeout(Run, 500);
+  //  } else {
+  //    disp('<h3>all test has done.</h3>');
+  //  }
+  };
 }(jQuery, window, document));
