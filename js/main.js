@@ -1,4 +1,7 @@
 (function($, window, document) {
+  var cnt = window.location.search.substr(1).split('=')[1] | 0,
+    targetCount = 20;
+
   var completed = 0,
     benchmarks = BenchmarkSuite.CountBenchmarks(),
     success = true,
@@ -8,16 +11,13 @@
     turboboost,
     note;
 
-  var targetTime = Date.parse('2015-12-04T10:40:00+09:00');
-  var now = Date.now();
-
   function send() {
     return $.ajax({
       'type': 'POST',
       'url': 'tbd.php',
       'data': {
         name: 'yasuda',
-        turboboost: false,
+        turboboost: true,
         scores: JSON.stringify(scores)
       }
     });
@@ -38,8 +38,8 @@
       detectTurboBoost();
       send()
         .then(function() {
-            disp('<h3>end: ' + new Date() + '</h3>');
-            // location.reload();
+          disp('<h3>end: ' + new Date() + '</h3>');
+          window.location.search = '?cnt=' + (++cnt);
         });
     }
   }
@@ -57,11 +57,11 @@
   }
 
   window.onload = function() {
-  //  if (now < targetTime) {
-      disp('<h3>start: ' + new Date(now) + '</h3>');
+    if (cnt < targetCount) {
+      disp('<h3>' + (cnt + 1) + '/' + targetCount + 'start: ' + new Date() + '</h3>');
       setTimeout(Run, 500);
-  //  } else {
-  //    disp('<h3>all test has done.</h3>');
-  //  }
+    } else {
+      disp('<h3>all test has done.</h3>');
+    }
   };
 }(jQuery, window, document));

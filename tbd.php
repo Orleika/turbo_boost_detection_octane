@@ -11,7 +11,7 @@ try {
 } catch(MongoConnectionException $e) {
     exit();
 }
-$collection = $db->selectCollection('statics');
+$collection = $db->selectCollection('statics4');
 $data = array(
     'name' => $name,
     'useragent' => $useragent,
